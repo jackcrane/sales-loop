@@ -48,7 +48,7 @@ const p =
 const getProfile = async (token) => {
   let f;
   try {
-    f = await fetch("https://native-inv.jackcrane.rocks/profile", {
+    f = await fetch("https://sales-loop.jackcrane.rocks/profile", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

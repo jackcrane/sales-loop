@@ -22,7 +22,7 @@ export const Login = () => {
 
     let f;
     try {
-      f = await fetch("https://native-inv.jackcrane.rocks/login", {
+      f = await fetch("https://sales-loop.jackcrane.rocks/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
