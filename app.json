@@ -12,7 +12,14 @@
         {
           "cameraPermission": "Allow SalesLoop to access your camera"
         }
-      ]
+      ],
+      [
+        "expo-barcode-scanner",
+        {
+          "cameraPermission": "Allow SalesLoop to access your camera"
+        }
+      ],
+      "sentry-expo"
     ],
     "splash": {
       "image": "./assets/splash.png",
@@ -24,20 +31,28 @@
       "supportsTablet": true,
       "associatedDomains": ["webcredentials:sales-loop.jackcrane.rocks"],
       "buildNumber": "1",
-      "bundleIdentifier": "com.jackcrane.SalesLoop"
+      "bundleIdentifier": "com.jackcrane.SalesLoop",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Allow SalesLoop to access your camera",
+        "NSMicrophoneUsageDescription": "Allow SalesLoop to access your microphone"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "997b62da-125e-4ae8-bc0d-dfd207b57174"
+        "projectId": "2488579b-1c00-4986-9db9-ea2c84c1f072"
       }
     }
   }
