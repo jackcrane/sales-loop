@@ -30,7 +30,7 @@
     "ios": {
       "supportsTablet": true,
       "associatedDomains": ["webcredentials:sales-loop.jackcrane.rocks"],
-      "buildNumber": "1",
+      "buildNumber": "2",
       "bundleIdentifier": "com.jackcrane.SalesLoop",
       "infoPlist": {
         "NSCameraUsageDescription": "Allow SalesLoop to access your camera",
