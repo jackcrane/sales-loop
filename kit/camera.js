@@ -1,57 +1,54 @@
-import React, { useState, useEffect } from "react";
-import { Text, View, StyleSheet, Button } from "react-native";
-import { BarCodeScanner } from "expo-barcode-scanner";
 import styled from "styled-components/native";
-
-const StyledCamera = styled(BarCodeScanner)`
-  height: 200px;
-  border: 3px solid ${(props) => props.theme.color["yellow:primary"]};
-  border-radius: 5px;
-  overflow: hidden;
-`;
+import React, { useState, useEffect } from "react";
+import { Camera, useCameraDevices } from "react-native-vision-camera";
+import { ActivityIndicator, Alert } from "react-native";
 
 export const CameraComponent = (props) => {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
-  const [readyToScan, setReadyToScan] = useState(true);
-
-  const scanDelay = 500; // Delay between scans in milliseconds
-
   useEffect(() => {
-    const getBarCodeScannerPermissions = async () => {
-      const { status } = await BarCodeScanner.requestPermissionsAsync();
-      setHasPermission(status === "granted");
-    };
-
-    getBarCodeScannerPermissions();
+    (async () => {
+      const cameraPermission = await Camera.getCameraPermissionStatus();
+      if (cameraPermission === "denied") {
+        Alert.alert(
+          "Camera permission denied",
+          "Please enable camera access in your device settings."
+        );
+      }
+      if (cameraPermission === "restricted") {
+        Alert.alert(
+          "Camera permission restricted",
+          "This could be due to parental or company device restrictions."
+        );
+      }
+      if (cameraPermission === "not-determined") {
+        const permissionRequest = await Camera.requestCameraPermission();
+        if (permissionRequest === "denied") {
+          Alert.alert(
+            "Camera permission denied",
+            "Please enable camera access in your device settings."
+          );
+        }
+        if (permissionRequest === "restricted") {
+          Alert.alert(
+            "Camera permission restricted",
+            "This could be due to parental or company device restrictions."
+          );
+        }
+        if (permissionRequest === "authorized") {
+          setHasPermission(true);
+        }
+      }
+      if (cameraPermission === "authorized") {
+        setHasPermission(true);
+      }
+    })();
   }, []);
 
-  const handleBarCodeScanned = ({ type, data }) => {
-    if (!readyToScan) return;
-    setScanned(true);
-    setReadyToScan(false);
-    console.log(data);
-    props.onScanned(data);
-    setTimeout(() => {
-      console.log("Unlocking scanner");
-      setScanned(false);
-      setReadyToScan(true);
-    }, scanDelay);
-  };
+  const devices = useCameraDevices();
+  const device = devices.back;
 
-  if (hasPermission === null) {
-    return <Text>Requesting for camera permission</Text>;
-  }
-  if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
-  }
+  if (!hasPermission || !device) return <ActivityIndicator />;
 
-  return (
-    <View>
-      <StyledCamera
-        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-        style={{ height: 200 }}
-      />
-    </View>
-  );
+  return <Camera style={{ flex: 1 }} device={device} isActive={true} />;
 };

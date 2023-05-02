@@ -22,7 +22,13 @@ export const Settings = ({ route, navigation }) => {
         <Text>View & edit your profile information</Text>
       </Card>
       <Spacer />
-      <Card title="About" icon={<TablerBox />} onPress={() => {}}>
+      <Card
+        title="About"
+        icon={<TablerBox />}
+        onPress={() => {
+          navigation.navigate("About");
+        }}
+      >
         <Text>View information about this app</Text>
       </Card>
       <Spacer />
@@ -31,11 +37,13 @@ export const Settings = ({ route, navigation }) => {
       </Card>
       <Spacer />
       <Card
-        title="How does SalesLoop work?"
+        title="What is SalesLoop?"
         icon={<TablerBrain />}
-        onPress={() => {}}
+        onPress={() => {
+          navigation.navigate("What is SalesLoop?");
+        }}
       >
-        <Text>Learn how SalesLoop works</Text>
+        <Text>Learn about SalesLoop and how it works.</Text>
       </Card>
     </>
   );

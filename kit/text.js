@@ -2,7 +2,8 @@ import styled from "styled-components/native";
 
 export const Text = styled.Text`
   font-size: 18px;
-  font-family: "DMSans_400Regular";
+  font-family: ${(props) =>
+    props.mono ? "DMMono_400Regular" : "DMSans_400Regular"};
 `;
 
 export const Link = styled.Text`

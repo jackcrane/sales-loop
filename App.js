@@ -27,18 +27,25 @@ import { Home } from "./pages/home";
 import { Scan } from "./pages/scan";
 import { Settings } from "./pages/settings";
 import { SettingsAccount } from "./pages/settings/account";
+import { AddModal } from "./kit/add-modal";
+import { WhatIs } from "./pages/settings/what-is";
+import { About } from "./pages/settings/about";
 
 const Stack = createNativeStackNavigator();
 
 const p =
-  (Component, large = false, bounces, user = {}) =>
+  ({ Component, large = false, bounces, user = {} }) =>
   (props) => {
     return (
       <View style={{ flex: 1 }}>
-        <Header large={large} logo={user?.user?.company?.logoUrl}>
+        <Header
+          large={large}
+          logo={user?.user?.company?.logoUrl || user?.company?.logoUrl}
+          nav={props.navigation}
+        >
           {props.route.name}
         </Header>
-        <Body style={{ flex: 1 }} bounces={bounces}>
+        <Body style={{ flex: 1, backgroundColor: "yellow" }} bounces={bounces}>
           <Component {...props} />
         </Body>
       </View>
@@ -116,6 +123,8 @@ export default function App() {
     });
   }, []);
 
+  const [modalData, setModalData] = useState(null);
+
   useEffect(() => {
     EventHandler.on("LOGIN:SUCCESS", (e) => {
       setUser(e.user);
@@ -128,6 +137,7 @@ export default function App() {
       setToken(null);
       setUser(null);
       DataStore.set("token", null);
+      DataStore.set("STATUS:WELCOMED", false);
     });
     EventHandler.on("WELCOME:FINISH", () => {
       setWelcomed(true);
@@ -136,6 +146,13 @@ export default function App() {
     EventHandler.on("WELCOME:REWATCH", () => {
       console.log("rewatch");
       setWelcomed(false);
+    });
+    EventHandler.on("MODAL:OPEN", (e) => {
+      console.log("open", e);
+      setModalData(e);
+    });
+    EventHandler.on("MODAL:CLOSE", () => {
+      setModalData(null);
     });
   }, []);
 
@@ -183,39 +200,88 @@ export default function App() {
             }}
           >
             {!loggedIn ? (
-              <Stack.Screen name="Login" component={p(Login, true, false)} />
+              <Stack.Screen
+                name="Login"
+                component={p({ Component: Login, large: true, bounces: false })}
+              />
             ) : !welcomed ? (
               <Stack.Screen
                 name="Welcome"
-                component={p(Welcome, false, true, user)}
+                component={p({
+                  Component: Welcome,
+                  large: false,
+                  bounces: true,
+                  user: user,
+                })}
                 initialParams={{ user }}
               />
             ) : (
               <>
                 <Stack.Screen
                   name="Home"
-                  component={p(Home, false, true, user)}
+                  component={p({
+                    Component: Home,
+                    large: false,
+                    bounces: true,
+                    user: user,
+                  })}
                   initialParams={{ user }}
                 />
                 <Stack.Screen
                   name="Scan"
-                  component={p(Scan, false, true, user)}
+                  component={p({
+                    Component: Scan,
+                    large: false,
+                    bounces: true,
+                    user: user,
+                  })}
                   initialParams={{ user }}
                 />
                 <Stack.Screen
                   name="Settings"
-                  component={p(Settings, false, true, user)}
+                  component={p({
+                    Component: Settings,
+                    large: false,
+                    bounces: true,
+                    user: user,
+                  })}
                   initialParams={{ user }}
                 />
                 <Stack.Screen
                   name="Account"
-                  component={p(SettingsAccount, false, true, user)}
+                  component={p({
+                    Component: SettingsAccount,
+                    large: false,
+                    bounces: true,
+                    user: user,
+                  })}
+                  initialParams={{ user }}
+                />
+                <Stack.Screen
+                  name="What is SalesLoop?"
+                  component={p({
+                    Component: WhatIs,
+                    large: false,
+                    bounces: true,
+                    user: user,
+                  })}
+                  initialParams={{ user }}
+                />
+                <Stack.Screen
+                  name="About"
+                  component={p({
+                    Component: About,
+                    large: false,
+                    bounces: true,
+                    user: user,
+                  })}
                   initialParams={{ user }}
                 />
               </>
             )}
           </Stack.Navigator>
         </NavigationContainer>
+        <AddModal config={modalData} />
       </ThemeProvider>
     </SafeAreaProvider>
   );

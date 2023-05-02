@@ -36,7 +36,9 @@ const HeaderSafeContainer = styled.View`
 const HeaderTitlesection = styled.View`
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-between;
+  padding-left: 10px;
+  padding-right: 10px;
   align-items: center;
   width: 95%;
   border: 1px solid white;
@@ -84,8 +86,13 @@ export const Header = (props) => {
             />
           </Between>
         )}
-        <HeaderTitlesection>
+        <HeaderTitlesection large={props.large}>
           <HeaderText>{props.children}</HeaderText>
+          {props.large ? null : (
+            <TouchableWithoutFeedback onPress={props.nav.goBack}>
+              <HeaderText style={{ fontSize: 18 }}>Back</HeaderText>
+            </TouchableWithoutFeedback>
+          )}
         </HeaderTitlesection>
       </HeaderSafeContainer>
     </HeaderContainer>

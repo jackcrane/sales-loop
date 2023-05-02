@@ -15,6 +15,14 @@ export const Row = styled.View`
   flex: 1;
   justify-content: ${(props) =>
     props.between ? "space-between" : "flex-start"};
+  gap: ${(props) => props.gap || 0}px;
+  height: 100%;
+`;
+
+export const SimpleRow = styled.View`
+  display: flex;
+  flex-direction: row;
+  align-items: ${(props) => props.align || "center"};
 `;
 
 export const Spacer = styled.View`
@@ -26,4 +34,10 @@ export const Column = styled.View`
   display: flex;
   flex-direction: column;
   flex: 1;
+`;
+
+export const Hr = styled.View`
+  height: 1px;
+  width: 100%;
+  background-color: ${(props) => props.theme.color["grey:border"]};
 `;

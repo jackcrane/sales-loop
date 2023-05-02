@@ -1,4 +1,4 @@
-import { Text } from "react-native";
+import { Text, View } from "react-native";
 import { ThemeConsumer } from "styled-components";
 import styled from "styled-components/native";
 import { LinearGradient } from "expo-linear-gradient";
@@ -42,6 +42,26 @@ const generateGradient = (theme, role, notification) => {
   return grad;
 };
 
+const generateTightGradient = (theme, role, notification) => {
+  const grad = `linear-gradient(90deg, ${
+    notification ? theme.color["blue:bg"] : "rgba(255, 255, 255, 0.1)"
+  } 0%, ${theme.color[`${role}:bg`]} 100%);`;
+
+  return grad;
+};
+
+export const AbsoluteGradient = (props) => (
+  <ThemeConsumer>
+    {(theme) => (
+      <Gradient
+        {...fromCSS(
+          generateTightGradient(theme, props.role, props.notification)
+        )}
+      />
+    )}
+  </ThemeConsumer>
+);
+
 export const Card = (props) => {
   return (
     <ThemeConsumer>
@@ -54,16 +74,20 @@ export const Card = (props) => {
               )}
             />
             <_CardInside>
-              <Row gap={5} align="flex-start">
-                {props.icon || null}
-                <Column>
-                  <Row between>
-                    <Trititle>{props.title}</Trititle>
-                    <Whisper mono>{props.label}</Whisper>
-                  </Row>
-                  <Text>{props.children}</Text>
-                </Column>
-              </Row>
+              <View style={{ minHeight: 10, flex: 1 }}>
+                <Row gap={5} align="flex-start">
+                  {props.icon || null}
+                  <Column>
+                    <View>
+                      <Row between>
+                        <Trititle>{props.title}</Trititle>
+                        <Whisper mono>{props.label}</Whisper>
+                      </Row>
+                      <Text>{props.children}</Text>
+                    </View>
+                  </Column>
+                </Row>
+              </View>
             </_CardInside>
           </_Card>
         ) : (

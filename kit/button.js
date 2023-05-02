@@ -1,4 +1,7 @@
 import styled from "styled-components/native";
+import { Row, SimpleRow } from "./util";
+import { AbsoluteGradient } from "./card";
+import { useEffect } from "react";
 
 const ActionButtonButton = styled.TouchableOpacity`
   background-color: ${(props) => props.theme.color[`${props.role}:bg`]};
@@ -35,3 +38,32 @@ export const BigGhostButton = styled.TouchableOpacity`
   width: 100px;
   text-align: center;
 `;
+
+const SmallButton = styled.TouchableOpacity`
+  border: 1px solid ${(props) => props.theme.color["grey:border"]};
+  border-radius: 5px;
+`;
+
+const SmallButtonText = styled(ActionButtonText)`
+  font-size: 14px;
+  color: black;
+`;
+
+const SmallButtonInner = styled.View`
+  padding: 5px;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+`;
+
+export const InlineButton = (props) => {
+  return (
+    <SmallButton onPress={props.onPress} activeOpacity={0.6}>
+      {props.role && <AbsoluteGradient role={props.role} />}
+      <SmallButtonInner>
+        {props.icon && props.icon}
+        <SmallButtonText {...props}>{props.children}</SmallButtonText>
+      </SmallButtonInner>
+    </SmallButton>
+  );
+};

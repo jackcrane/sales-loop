@@ -377,3 +377,24 @@ export const TablerHeart = (props) => (
     <Path d="M19.5 12.572 12 20l-7.5-7.428A5 5 0 1 1 12 6.006a5 5 0 1 1 7.5 6.572" />
   </Svg>
 );
+
+export const TextToIcon = (text) => {
+  switch (text) {
+    case "Account":
+      return <TablerAccount />;
+    case "Box":
+      return <TablerBox />;
+    case "Brain":
+      return <TablerBrain />;
+    case "Heart":
+      return <TablerHeart />;
+    case "Home":
+      return <TablerHome />;
+    case "Settings":
+      return <TablerSettings />;
+    case "DatabaseSearch":
+      return <TablerDatabaseSearch />;
+    default:
+      return <TablerAccount />;
+  }
+};

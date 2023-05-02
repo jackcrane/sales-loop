@@ -18,8 +18,7 @@
         {
           "cameraPermission": "Allow SalesLoop to access your camera"
         }
-      ],
-      "sentry-expo"
+      ]
     ],
     "splash": {
       "image": "./assets/splash.png",
@@ -30,7 +29,7 @@
     "ios": {
       "supportsTablet": true,
       "associatedDomains": ["webcredentials:sales-loop.jackcrane.rocks"],
-      "buildNumber": "2",
+      "buildNumber": "3",
       "bundleIdentifier": "com.jackcrane.SalesLoop",
       "infoPlist": {
         "NSCameraUsageDescription": "Allow SalesLoop to access your camera",
@@ -45,7 +44,8 @@
       "permissions": [
         "android.permission.CAMERA",
         "android.permission.RECORD_AUDIO"
-      ]
+      ],
+      "package": "com.jackcrane.SalesLoop"
     },
     "web": {
       "favicon": "./assets/favicon.png"

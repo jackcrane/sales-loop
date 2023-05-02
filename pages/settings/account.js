@@ -3,8 +3,11 @@ import { EventHandler } from "../../App";
 import { ActionButton } from "../../kit/button";
 import { Text } from "../../kit/text";
 import { Spacer } from "../../kit/util";
+import { Display } from "../../kit/display";
 
 export const SettingsAccount = ({ navigation, route }) => {
+  const user = route.params.user.user || route.params.user;
+
   const handleLogoutButtonPressed = () => {
     Alert.alert(
       "Logout",
@@ -34,6 +37,12 @@ export const SettingsAccount = ({ navigation, route }) => {
 
   return (
     <>
+      <Display title="Name">{user.name}</Display>
+      <Spacer />
+      <Display title="Email">{user.email}</Display>
+      <Spacer />
+      <Display title="Company">{user.company.name}</Display>
+      <Spacer />
       <ActionButton role="red" onPress={handleLogoutButtonPressed}>
         <Text>Logout</Text>
       </ActionButton>
