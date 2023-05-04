@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components/native";
 import { Subtitle, Text, Trititle } from "./text";
 import { TablerClose, TextToIcon } from "../assets/icons/tabler";
@@ -35,32 +35,88 @@ const HeaderRow = styled.View`
   align-items: center;
 `;
 
-export const AddModal = (props) => {
-  if (props.config === null) {
-    return null;
+export const AddModal = () => {
+  const [config, setConfig] = useState(null);
+
+  useEffect(() => {
+    EventHandler.on("MODAL:CLOSE", () => {
+      setConfig(null);
+    });
+    EventHandler.on("MODAL:OPEN", (config) => {
+      setConfig(config);
+    });
+  }, []);
+
+  if (config === null) {
+    return <></>;
+  }
+  return (
+    <>
+      <ModalBg>
+        <ModalParent>
+          <HeaderRow>
+            <Row gap={10}>
+              {config.icon}
+              <Subtitle>{config.title}</Subtitle>
+            </Row>
+            <InlineButton
+              icon={<TablerClose size={15} />}
+              type="close"
+              role="red"
+              onPress={() => {
+                EventHandler.emit("MODAL:CLOSE");
+              }}
+            >
+              Close
+            </InlineButton>
+          </HeaderRow>
+          <Spacer />
+          {config.content}
+          {/* <Text>{JSON.stringify(config)}</Text> */}
+        </ModalParent>
+      </ModalBg>
+      <SubModal />
+    </>
+  );
+};
+
+export const SubModal = () => {
+  const [config, setConfig] = useState(null);
+
+  useEffect(() => {
+    EventHandler.on("SUBMODAL:CLOSE", () => {
+      setConfig(null);
+    });
+    EventHandler.on("SUBMODAL:OPEN", (config) => {
+      setConfig(config);
+    });
+  }, []);
+
+  if (config === null) {
+    return <></>;
   }
   return (
     <ModalBg>
-      <ModalParent>
+      <ModalParent style={{ height: 350 }}>
         <HeaderRow>
           <Row gap={10}>
-            {props.config.icon}
-            <Subtitle>{props.config.title}</Subtitle>
+            {config.icon}
+            <Subtitle>{config.title}</Subtitle>
           </Row>
           <InlineButton
             icon={<TablerClose size={15} />}
             type="close"
             role="red"
             onPress={() => {
-              EventHandler.emit("MODAL:CLOSE");
+              EventHandler.emit("SUBMODAL:CLOSE");
             }}
           >
             Close
           </InlineButton>
         </HeaderRow>
         <Spacer />
-        {props.config.content}
-        {/* <Text>{JSON.stringify(props.config)}</Text> */}
+        {config.content}
+        {/* <Text>{JSON.stringify(config)}</Text> */}
       </ModalParent>
     </ModalBg>
   );
