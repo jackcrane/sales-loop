@@ -37,7 +37,7 @@ import { WhatIs } from "./pages/settings/what-is";
 import { About } from "./pages/settings/about";
 import { Carts } from "./pages/carts";
 import { Cart } from "./pages/cart";
-import { endpoint } from "./util/apiHandler";
+import { endpoint, request } from "./util/apiHandler";
 
 const Stack = createNativeStackNavigator();
 
@@ -79,37 +79,18 @@ const getProfile = async (_token) => {
     EventHandler.emit("LOGOUT");
     return null;
   }
-  let f;
-  try {
-    f = await fetch(endpoint + "/profile", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    console.log("AUTHING", f.status);
-    let json = {};
-    try {
-      json = await f.json();
-    } catch (error) {
-      console.error("96", error);
-    }
-    if (f.status === 200) {
-      if (json.user) return json.user;
-      return json;
-    } else {
-      console.log("ERROR 102", f.status);
-      return { error: f.status };
-    }
-  } catch (error) {
-    Toast.show({
-      type: "error",
-      text1: "Error",
-      text2: "Something went wrong. Please try again.",
-    });
-    console.error("Error 111", error);
-    return { error: error };
+
+  let r = await request("/profile", {
+    method: "GET",
+    token,
+  });
+  console.log("AUTHING", r);
+  if (r.ok) {
+    if (r.json.user) return r.json.user;
+    return r.json;
+  } else {
+    console.log("ERROR 102", r.error);
+    return { error: r.error };
   }
 };
 export { getProfile };

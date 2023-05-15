@@ -1,7 +1,7 @@
 import { Toast } from "react-native-toast-message/lib/src/Toast";
 import { DataStore } from "./data";
-// const endpoint = "https://sales-loop.jackcrane.rocks";
-export const endpoint = "http://localhost:3000";
+const endpoint = "https://sales-loop.jackcrane.rocks";
+// export const endpoint = "http://localhost:3000";
 
 export const request = async (url, options) => {
   console.log(
