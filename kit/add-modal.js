@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components/native";
 import { Subtitle, Text, Trititle } from "./text";
 import { TablerClose, TextToIcon } from "../assets/icons/tabler";
-import { View } from "react-native";
+import { KeyboardAvoidingView, Modal, View } from "react-native";
 import { Row, Spacer } from "./util";
 import { InlineButton } from "./button";
 import { EventHandler } from "../App";
+import useKeyboard from "@rnhooks/keyboard";
 
 const ModalBg = styled.View`
   position: absolute;
@@ -92,32 +93,66 @@ export const SubModal = () => {
     });
   }, []);
 
+  const [visible, dismiss] = useKeyboard();
+
   if (config === null) {
     return <></>;
   }
+
   return (
     <ModalBg>
-      <ModalParent style={{ height: 350 }}>
-        <HeaderRow>
-          <Row gap={10}>
-            {config.icon}
-            <Subtitle>{config.title}</Subtitle>
-          </Row>
-          <InlineButton
-            icon={<TablerClose size={15} />}
-            type="close"
-            role="red"
-            onPress={() => {
-              EventHandler.emit("SUBMODAL:CLOSE");
-            }}
-          >
-            Close
-          </InlineButton>
-        </HeaderRow>
-        <Spacer />
-        {config.content}
-        {/* <Text>{JSON.stringify(config)}</Text> */}
-      </ModalParent>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{
+          position: "absolute",
+          bottom: 0,
+          width: "100%",
+          backgroundColor: "rgba(0,0,0,0.5)",
+          flex: 1,
+        }}
+      >
+        <ModalBg>
+          <ModalParent style={{ height: visible ? 250 : 350 }}>
+            <HeaderRow>
+              <Row gap={10}>
+                {config.icon}
+                <Subtitle>{config.title}</Subtitle>
+              </Row>
+              <InlineButton
+                icon={<TablerClose size={15} />}
+                type="close"
+                role="red"
+                onPress={() => {
+                  EventHandler.emit("SUBMODAL:CLOSE");
+                }}
+              >
+                Close
+              </InlineButton>
+            </HeaderRow>
+            <Spacer />
+            {config.content}
+            {visible && (
+              <View
+                style={{
+                  alignSelf: "flex-end",
+                }}
+              >
+                <Spacer />
+                <InlineButton
+                  icon={<TablerClose size={15} />}
+                  type="close"
+                  role="red"
+                  onPress={() => {
+                    dismiss();
+                  }}
+                >
+                  Close keyboard
+                </InlineButton>
+              </View>
+            )}
+          </ModalParent>
+        </ModalBg>
+      </KeyboardAvoidingView>
     </ModalBg>
   );
 };

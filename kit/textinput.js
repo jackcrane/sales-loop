@@ -27,9 +27,13 @@ export const TextInput = (props) => {
           </TextInputLabel>
           <TextInputInput
             placeholderTextColor={theme.color["grey:placeholder"]}
-            inputMode="email"
-            autoComplete="email"
-            autoCapitalize="none"
+            {...(props.email
+              ? {
+                  inputMode: "email",
+                  autoComplete: "email",
+                  autoCapitalize: "none",
+                }
+              : null)}
             spellCheck={false}
             {...props}
             onChangeText={(text) => props.onChangeText(text)}

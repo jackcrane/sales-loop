@@ -1,5 +1,6 @@
 import styled from "styled-components/native";
 import { Text, Whisper } from "./text";
+import { TouchableOpacity } from "react-native";
 
 const Container = styled.View`
   flex-direction: column;
@@ -16,7 +17,9 @@ const Title = styled(Whisper)`
 
 export const Display = (props) => (
   <Container>
-    <Title>{props.title}</Title>
-    <Text mono={props.mono ? true : null}>{props.children}</Text>
+    <TouchableOpacity onPress={props.onPress}>
+      <Title>{props.title}</Title>
+      <Text mono={props.mono ? true : null}>{props.children}</Text>
+    </TouchableOpacity>
   </Container>
 );

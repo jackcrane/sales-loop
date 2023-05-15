@@ -1,7 +1,7 @@
 // https://react-svgr.com/playground/?native=true
 
 import * as React from "react";
-import Svg, { Path } from "react-native-svg";
+import Svg, { Path, Circle } from "react-native-svg";
 
 export const TablerAlertHexagon = (props) => (
   <Svg
@@ -375,6 +375,26 @@ export const TablerHeart = (props) => (
   >
     <Path stroke="none" d="M0 0h24v24H0z" />
     <Path d="M19.5 12.572 12 20l-7.5-7.428A5 5 0 1 1 12 6.006a5 5 0 1 1 7.5 6.572" />
+  </Svg>
+);
+
+export const TablerTag = (props) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={props.size || 24}
+    height={props.size || 24}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke={props.color || "black"}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth={props.strokeWidth || 2}
+    className="icon icon-tabler icon-tabler-tag"
+    {...props}
+  >
+    <Path stroke="none" d="M0 0h24v24H0z" />
+    <Circle cx={8.5} cy={8.5} r={1} fill="currentColor" />
+    <Path d="M4 7v3.859c0 .537.213 1.052.593 1.432l8.116 8.116a2.025 2.025 0 0 0 2.864 0l4.834-4.834a2.025 2.025 0 0 0 0-2.864L12.29 4.593A2.025 2.025 0 0 0 10.859 4H7a3 3 0 0 0-3 3z" />
   </Svg>
 );
 

@@ -74,7 +74,7 @@ export const Card = (props) => {
               )}
             />
             <_CardInside>
-              <View style={{ minHeight: 10, flex: 1 }}>
+              <View style={{ flex: 1 }}>
                 <Row gap={5} align="flex-start">
                   {props.icon || null}
                   <Column>

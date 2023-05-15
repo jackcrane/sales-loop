@@ -31,10 +31,8 @@ export const CameraComponent = (props) => {
     if (!readyToScan) return;
     setScanned(true);
     setReadyToScan(false);
-    console.log(data);
     props.onScanned(data);
     setTimeout(() => {
-      console.log("Unlocking scanner");
       setScanned(false);
       setReadyToScan(true);
     }, scanDelay);

@@ -8,7 +8,7 @@ const ActionButtonButton = styled.TouchableOpacity`
   border: 1px solid ${(props) => props.theme.color[`${props.role}:primary`]};
   border-radius: 5px;
   padding: 10px;
-  width: 100%;
+  width: ${(props) => (props.half ? "48%" : "100%")};
   margin-bottom: 10px;
   align-items: center;
 `;

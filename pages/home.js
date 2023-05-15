@@ -57,7 +57,7 @@ export const Home = ({ navigation, route }) => {
           <Text>Scan</Text>
         </BigGhostButton>
         <Spacer />
-        <BigGhostButton>
+        <BigGhostButton onPress={() => navigation.navigate("Carts")}>
           <TablerCart size={50} strokeWidth={1.5} />
           <Text style={{ textAlign: "center" }}>Manage Carts</Text>
         </BigGhostButton>

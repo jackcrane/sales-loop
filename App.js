@@ -20,6 +20,11 @@ import { DMMono_400Regular } from "@expo-google-fonts/dm-mono";
 import { Body, Header } from "./kit/header";
 import { useEffect, useState } from "react";
 import { DataStore } from "./util/data";
+import Toast, {
+  ErrorToast,
+  InfoToast,
+  SuccessToast,
+} from "react-native-toast-message";
 
 import { Login } from "./pages/login";
 import { Welcome } from "./pages/welcome";
@@ -30,8 +35,20 @@ import { SettingsAccount } from "./pages/settings/account";
 import { AddModal } from "./kit/add-modal";
 import { WhatIs } from "./pages/settings/what-is";
 import { About } from "./pages/settings/about";
+import { Carts } from "./pages/carts";
+import { Cart } from "./pages/cart";
+import { endpoint } from "./util/apiHandler";
 
 const Stack = createNativeStackNavigator();
+
+const TOAST_STYLES = {
+  borderRadius: 0,
+  width: "100%",
+  borderLeftWidth: 0,
+  paddingTop: 50,
+  marginTop: -50,
+  height: 100,
+};
 
 const p =
   ({ Component, large = false, bounces, user = {} }) =>
@@ -52,30 +69,50 @@ const p =
     );
   };
 
-const getProfile = async (token) => {
+const getProfile = async (_token) => {
+  let token = _token;
+  console.log("VERIFYING PROFILE", token);
+  if (!token) {
+    token = await DataStore.get("token");
+  }
+  if (!token) {
+    EventHandler.emit("LOGOUT");
+    return null;
+  }
   let f;
   try {
-    f = await fetch("https://sales-loop.jackcrane.rocks/profile", {
+    f = await fetch(endpoint + "/profile", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     });
+    console.log("AUTHING", f.status);
     let json = {};
     try {
       json = await f.json();
-    } catch (error) {}
+    } catch (error) {
+      console.error("96", error);
+    }
     if (f.status === 200) {
+      if (json.user) return json.user;
       return json;
     } else {
+      console.log("ERROR 102", f.status);
       return { error: f.status };
     }
   } catch (error) {
-    console.error(error);
-    return null;
+    Toast.show({
+      type: "error",
+      text1: "Error",
+      text2: "Something went wrong. Please try again.",
+    });
+    console.error("Error 111", error);
+    return { error: error };
   }
 };
+export { getProfile };
 
 export default function App() {
   // LogBox.ignoreAllLogs();
@@ -123,8 +160,6 @@ export default function App() {
     });
   }, []);
 
-  const [modalData, setModalData] = useState(null);
-
   useEffect(() => {
     EventHandler.on("LOGIN:SUCCESS", (e) => {
       setUser(e.user);
@@ -144,15 +179,7 @@ export default function App() {
       DataStore.set("STATUS:WELCOMED", true);
     });
     EventHandler.on("WELCOME:REWATCH", () => {
-      console.log("rewatch");
       setWelcomed(false);
-    });
-    EventHandler.on("MODAL:OPEN", (e) => {
-      console.log("open", e);
-      setModalData(e);
-    });
-    EventHandler.on("MODAL:CLOSE", () => {
-      setModalData(null);
     });
   }, []);
 
@@ -161,128 +188,212 @@ export default function App() {
   }
 
   return (
-    <SafeAreaProvider>
-      <ThemeProvider
-        theme={{
-          color: {
-            "grey:border": "#E0E0E0",
-            "grey:placeholder": "#B3B3B3",
-            "grey:whisper": "#ACACAC",
-            "blue:primary": "#1982C4",
-            "blue:bg": "rgba(25, 130, 196, 0.1)",
-            "red:primary": "#FF595E",
-            "red:bg": "rgba(255, 89, 94, 0.1)",
-            "yellow:primary": "#FFCA3A",
-            "yellow:bg": "rgba(255, 202, 58, 0.1)",
-            "green:primary": "#8AC926",
-            "green:bg": "rgba(138, 201, 38, 0.1)",
-            "purple:primary": "#6A4C93",
-            "purple:bg": "rgba(106, 76, 147, 0.1)",
-          },
-        }}
-      >
-        <StatusBar style="light" />
-        <NavigationContainer
+    <>
+      <SafeAreaProvider>
+        <ThemeProvider
           theme={{
-            ...DefaultTheme,
-            colors: {
-              ...DefaultTheme.colors,
-              card: "black",
-              text: "#fff",
-              border: "black",
-              background: "white",
+            color: {
+              "grey:border": "#E0E0E0",
+              "grey:placeholder": "#B3B3B3",
+              "grey:whisper": "#ACACAC",
+              "blue:primary": "#1982C4",
+              "blue:bg": "rgba(25, 130, 196, 0.1)",
+              "red:primary": "#FF595E",
+              "red:bg": "rgba(255, 89, 94, 0.1)",
+              "yellow:primary": "#FFCA3A",
+              "yellow:bg": "rgba(255, 202, 58, 0.1)",
+              "green:primary": "#8AC926",
+              "green:bg": "rgba(138, 201, 38, 0.1)",
+              "purple:primary": "#6A4C93",
+              "purple:bg": "rgba(106, 76, 147, 0.1)",
             },
           }}
         >
-          <Stack.Navigator
-            screenOptions={{
-              headerShown: false,
+          <StatusBar style="light" />
+          <NavigationContainer
+            theme={{
+              ...DefaultTheme,
+              colors: {
+                ...DefaultTheme.colors,
+                card: "black",
+                text: "#fff",
+                border: "black",
+                background: "white",
+              },
             }}
           >
-            {!loggedIn ? (
-              <Stack.Screen
-                name="Login"
-                component={p({ Component: Login, large: true, bounces: false })}
-              />
-            ) : !welcomed ? (
-              <Stack.Screen
-                name="Welcome"
-                component={p({
-                  Component: Welcome,
-                  large: false,
-                  bounces: true,
-                  user: user,
-                })}
-                initialParams={{ user }}
-              />
-            ) : (
-              <>
+            <Stack.Navigator
+              screenOptions={{
+                headerShown: false,
+              }}
+            >
+              {!loggedIn ? (
                 <Stack.Screen
-                  name="Home"
+                  name="Login"
                   component={p({
-                    Component: Home,
+                    Component: Login,
+                    large: true,
+                    bounces: false,
+                  })}
+                />
+              ) : !welcomed ? (
+                <Stack.Screen
+                  name="Welcome"
+                  component={p({
+                    Component: Welcome,
                     large: false,
                     bounces: true,
                     user: user,
                   })}
                   initialParams={{ user }}
                 />
-                <Stack.Screen
-                  name="Scan"
-                  component={p({
-                    Component: Scan,
-                    large: false,
-                    bounces: true,
-                    user: user,
-                  })}
-                  initialParams={{ user }}
-                />
-                <Stack.Screen
-                  name="Settings"
-                  component={p({
-                    Component: Settings,
-                    large: false,
-                    bounces: true,
-                    user: user,
-                  })}
-                  initialParams={{ user }}
-                />
-                <Stack.Screen
-                  name="Account"
-                  component={p({
-                    Component: SettingsAccount,
-                    large: false,
-                    bounces: true,
-                    user: user,
-                  })}
-                  initialParams={{ user }}
-                />
-                <Stack.Screen
-                  name="What is SalesLoop?"
-                  component={p({
-                    Component: WhatIs,
-                    large: false,
-                    bounces: true,
-                    user: user,
-                  })}
-                  initialParams={{ user }}
-                />
-                <Stack.Screen
-                  name="About"
-                  component={p({
-                    Component: About,
-                    large: false,
-                    bounces: true,
-                    user: user,
-                  })}
-                  initialParams={{ user }}
-                />
-              </>
-            )}
-          </Stack.Navigator>
-        </NavigationContainer>
-        <AddModal config={modalData} />
-      </ThemeProvider>
-    </SafeAreaProvider>
+              ) : (
+                <>
+                  <Stack.Screen
+                    name="Home"
+                    component={p({
+                      Component: Home,
+                      large: false,
+                      bounces: true,
+                      user: user,
+                    })}
+                    initialParams={{ user }}
+                  />
+                  <Stack.Screen
+                    name="Scan"
+                    component={p({
+                      Component: Scan,
+                      large: false,
+                      bounces: true,
+                      user: user,
+                    })}
+                    initialParams={{ user }}
+                  />
+                  <Stack.Screen
+                    name="Settings"
+                    component={p({
+                      Component: Settings,
+                      large: false,
+                      bounces: true,
+                      user: user,
+                    })}
+                    initialParams={{ user }}
+                  />
+                  <Stack.Screen
+                    name="Account"
+                    component={p({
+                      Component: SettingsAccount,
+                      large: false,
+                      bounces: true,
+                      user: user,
+                    })}
+                    initialParams={{ user }}
+                  />
+                  <Stack.Screen
+                    name="What is SalesLoop?"
+                    component={p({
+                      Component: WhatIs,
+                      large: false,
+                      bounces: true,
+                      user: user,
+                    })}
+                    initialParams={{ user }}
+                  />
+                  <Stack.Screen
+                    name="About"
+                    component={p({
+                      Component: About,
+                      large: false,
+                      bounces: true,
+                      user: user,
+                    })}
+                    initialParams={{ user }}
+                  />
+                  <Stack.Screen
+                    name="Carts"
+                    component={p({
+                      Component: Carts,
+                      large: false,
+                      bounces: true,
+                      user: user,
+                    })}
+                    initialParams={{ user }}
+                  />
+                  <Stack.Screen
+                    name="Cart"
+                    component={p({
+                      Component: Cart,
+                      large: false,
+                      bounces: true,
+                      user: user,
+                    })}
+                    initialParams={{ user }}
+                  />
+                </>
+              )}
+            </Stack.Navigator>
+          </NavigationContainer>
+          <AddModal />
+        </ThemeProvider>
+      </SafeAreaProvider>
+      <Toast
+        config={{
+          error: (props) => (
+            <ErrorToast
+              {...props}
+              style={{
+                backgroundColor: "red",
+                opacity: 0.6,
+                ...TOAST_STYLES,
+              }}
+              text1Style={{
+                color: "white",
+                fontSize: 20,
+              }}
+              text2Style={{
+                color: "white",
+                fontSize: 16,
+              }}
+            />
+          ),
+          success: (props) => (
+            <SuccessToast
+              {...props}
+              style={{
+                backgroundColor: "green",
+                opacity: 0.6,
+                ...TOAST_STYLES,
+              }}
+              text1Style={{
+                color: "white",
+                fontSize: 20,
+              }}
+              text2Style={{
+                color: "white",
+                fontSize: 16,
+              }}
+            />
+          ),
+          info: (props) => (
+            <InfoToast
+              {...props}
+              style={{
+                backgroundColor: "#1D71F2",
+                opacity: 0.6,
+                ...TOAST_STYLES,
+              }}
+              text1Style={{
+                color: "white",
+                fontSize: 20,
+              }}
+              text2Style={{
+                color: "white",
+                fontSize: 16,
+              }}
+            />
+          ),
+        }}
+      />
+    </>
   );
 }

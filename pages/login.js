@@ -8,6 +8,7 @@ import { ThemeConsumer } from "styled-components";
 import { Error } from "../kit/feedback";
 import { EventHandler } from "../App";
 import { DataStore } from "../util/data";
+import { endpoint } from "../util/apiHandler";
 
 export const Login = () => {
   const [loading, setLoading] = useState(false);
@@ -22,7 +23,7 @@ export const Login = () => {
 
     let f;
     try {
-      f = await fetch("https://sales-loop.jackcrane.rocks/login", {
+      f = await fetch(endpoint + "/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -46,7 +47,7 @@ export const Login = () => {
       }
     } catch (error) {
       console.error(error);
-      setError(error);
+      setError(JSON.stringify(error));
       setLoading(false);
     }
   };
