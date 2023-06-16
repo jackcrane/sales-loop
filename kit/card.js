@@ -32,20 +32,20 @@ const Gradient = styled(LinearGradient)`
   height: 100%;
 `;
 
-const generateGradient = (theme, role, notification) => {
+const generateGradient = (theme, scheme, notification) => {
   const grad = `linear-gradient(90deg, ${
     notification ? theme.color["blue:bg"] : "rgba(255, 255, 255, 0.1)"
   } 0%, rgba(255,255,255,0.1) 10%, rgba(255,255,255,0.1) 70%, ${
-    theme.color[`${role}:bg`]
+    theme.color[`${scheme}:bg`]
   } 100%);`;
 
   return grad;
 };
 
-const generateTightGradient = (theme, role, notification) => {
+const generateTightGradient = (theme, scheme, notification) => {
   const grad = `linear-gradient(90deg, ${
     notification ? theme.color["blue:bg"] : "rgba(255, 255, 255, 0.1)"
-  } 0%, ${theme.color[`${role}:bg`]} 100%);`;
+  } 0%, ${theme.color[`${scheme}:bg`]} 100%);`;
 
   return grad;
 };
@@ -55,7 +55,7 @@ export const AbsoluteGradient = (props) => (
     {(theme) => (
       <Gradient
         {...fromCSS(
-          generateTightGradient(theme, props.role, props.notification)
+          generateTightGradient(theme, props.scheme, props.notification)
         )}
       />
     )}
@@ -70,7 +70,7 @@ export const Card = (props) => {
           <_Card style={{ padding: 0 }}>
             <Gradient
               {...fromCSS(
-                generateGradient(theme, props.role, props.notification)
+                generateGradient(theme, props.scheme, props.notification)
               )}
             />
             <_CardInside>
@@ -94,7 +94,7 @@ export const Card = (props) => {
           <TouchableCard onPress={props.onPress}>
             <Gradient
               {...fromCSS(
-                generateGradient(theme, props.role, props.notification)
+                generateGradient(theme, props.scheme, props.notification)
               )}
             />
             <_CardInside>

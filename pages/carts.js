@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import {
   TablerCart,
+  TablerCartAdd,
   TablerChevronDown,
   TablerDatabaseSearch,
   TablerHome,
@@ -47,7 +48,14 @@ export const Carts = (props) => {
   const isFocused = useIsFocused();
   useEffect(() => {
     EventHandler.on("CARTS:UPDATE", () => {
-      setCartKey(cartKey + 1);
+      request("/carts?includeProduct=true", {
+        method: "GET",
+      }).then((res) => {
+        if (res.ok) {
+          setCarts(res.json.carts);
+        } else {
+        }
+      });
     });
   }, []);
 
@@ -70,54 +78,73 @@ export const Carts = (props) => {
           <Subtitle>Active carts</Subtitle>
           <Spacer height={10} />
           {carts ? (
-            carts.map((cart) => (
-              <>
-                <Card
-                  title={cart.name}
-                  icon={<TablerCart />}
-                  label={moment(cart.updatedAt).fromNow()}
-                  onPress={() => {
-                    props.navigation.navigate("Cart", {
-                      cart: cart,
-                    });
-                  }}
-                >
-                  <Small>
-                    Your cart containing {cart.products.length} items
-                  </Small>
-                </Card>
-                <Spacer height={10} />
-              </>
-            ))
+            <>
+              {carts.map((cart) => (
+                <>
+                  <Card
+                    title={cart.name}
+                    icon={<TablerCart />}
+                    label={moment(cart.updatedAt).fromNow()}
+                    onPress={() => {
+                      props.navigation.navigate("Cart", {
+                        cart: cart,
+                      });
+                    }}
+                  >
+                    <Small>
+                      Your cart containing {cart.products.length} items
+                    </Small>
+                  </Card>
+                  <Spacer height={10} />
+                </>
+              ))}
+              {carts.length == 0 && <Text>You have no active carts. </Text>}
+              <Card
+                title="Create new cart"
+                icon={<TablerCartAdd />}
+                scheme="blue"
+                onPress={() => {
+                  EventHandler.emit("SUBMODAL:OPEN", {
+                    title: "Create new cart",
+                    content: <CartPicker />,
+                  });
+                }}
+              >
+                <Small>Create a new cart to start adding products to it</Small>
+              </Card>
+            </>
           ) : (
             <ActivityIndicator />
           )}
-          <Hr />
           <Spacer height={10} />
-          <Subtitle>Inactive carts</Subtitle>
-          <Spacer height={10} />
-          {inactiveCarts ? (
-            inactiveCarts.map((cart) => (
-              <>
-                <Card
-                  title={cart.name}
-                  icon={<TablerCart />}
-                  label={moment(cart.updatedAt).fromNow()}
-                  onPress={() => {
-                    props.navigation.navigate("Cart", {
-                      cart: cart,
-                    });
-                  }}
-                >
-                  <Small>
-                    Your inactive cart containing {cart.products.length} items
-                  </Small>
-                </Card>
-                <Spacer height={10} />
-              </>
-            ))
+          {inactiveCarts && inactiveCarts.length > 0 ? (
+            <>
+              <Hr />
+              <Spacer height={10} />
+              <Subtitle>Inactive carts</Subtitle>
+              <Spacer height={10} />
+              {inactiveCarts.map((cart) => (
+                <>
+                  <Card
+                    title={cart.name}
+                    icon={<TablerCart />}
+                    label={moment(cart.updatedAt).fromNow()}
+                    onPress={() => {
+                      props.navigation.navigate("Cart", {
+                        cart: cart,
+                      });
+                    }}
+                  >
+                    <Small>
+                      Your inactive cart containing {cart.products.length} items
+                    </Small>
+                  </Card>
+                  <Spacer height={10} />
+                </>
+              ))}
+            </>
           ) : (
-            <ActivityIndicator />
+            <></>
           )}
         </>
       )}

@@ -43,11 +43,11 @@ export const SettingsAccount = ({ navigation, route }) => {
       <Spacer />
       <Display title="Company">{user.company.name}</Display>
       <Spacer />
-      <ActionButton role="red" onPress={handleLogoutButtonPressed}>
+      <ActionButton scheme="red" onPress={handleLogoutButtonPressed}>
         <Text>Logout</Text>
       </ActionButton>
       <Spacer />
-      <ActionButton role="yellow" onPress={handleOnboardingButtonPressed}>
+      <ActionButton scheme="yellow" onPress={handleOnboardingButtonPressed}>
         <Text>Re-watch onboarding</Text>
       </ActionButton>
     </>

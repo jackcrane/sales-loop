@@ -78,7 +78,7 @@ export const Welcome = ({ navigation, route }) => {
           <Spacer height={40} />
           <ActionButton
             onPress={() => EventHandler.emit("WELCOME:FINISH")}
-            role="blue"
+            scheme="blue"
           >
             Next
           </ActionButton>

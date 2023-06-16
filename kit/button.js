@@ -4,8 +4,8 @@ import { AbsoluteGradient } from "./card";
 import { useEffect } from "react";
 
 const ActionButtonButton = styled.TouchableOpacity`
-  background-color: ${(props) => props.theme.color[`${props.role}:bg`]};
-  border: 1px solid ${(props) => props.theme.color[`${props.role}:primary`]};
+  background-color: ${(props) => props.theme.color[`${props.scheme}:bg`]};
+  border: 1px solid ${(props) => props.theme.color[`${props.scheme}:primary`]};
   border-radius: 5px;
   padding: 10px;
   width: ${(props) => (props.half ? "48%" : "100%")};
@@ -16,7 +16,7 @@ const ActionButtonButton = styled.TouchableOpacity`
 const ActionButtonText = styled.Text`
   font-size: 18px;
   font-family: "DMSans_400Regular";
-  color: ${(props) => props.theme.color[`${props.role}:primary`]};
+  color: ${(props) => props.theme.color[`${props.scheme}:primary`]};
 `;
 
 export const ActionButton = (props) => {
@@ -42,6 +42,7 @@ export const BigGhostButton = styled.TouchableOpacity`
 const SmallButton = styled.TouchableOpacity`
   border: 1px solid ${(props) => props.theme.color["grey:border"]};
   border-radius: 5px;
+  overflow: hidden;
 `;
 
 const SmallButtonText = styled(ActionButtonText)`
@@ -59,7 +60,7 @@ const SmallButtonInner = styled.View`
 export const InlineButton = (props) => {
   return (
     <SmallButton onPress={props.onPress} activeOpacity={0.6}>
-      {props.role && <AbsoluteGradient role={props.role} />}
+      {props.scheme && <AbsoluteGradient scheme={props.scheme} />}
       <SmallButtonInner>
         {props.icon && props.icon}
         <SmallButtonText {...props}>{props.children}</SmallButtonText>

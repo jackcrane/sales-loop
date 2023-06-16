@@ -8,7 +8,7 @@ import { ThemeConsumer } from "styled-components";
 import { Error } from "../kit/feedback";
 import { EventHandler } from "../App";
 import { DataStore } from "../util/data";
-import { endpoint } from "../util/apiHandler";
+import { endpoint, request } from "../util/apiHandler";
 
 export const Login = () => {
   const [loading, setLoading] = useState(false);
@@ -23,28 +23,46 @@ export const Login = () => {
 
     let f;
     try {
-      f = await fetch(endpoint + "/login", {
+      await request("/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify({
           email: username,
           password,
         }),
+      }).then((res) => {
+        console.log(res);
+        if (res.ok) {
+          setLoading(false);
+          DataStore.set("token", res.json.token);
+          EventHandler.emit("LOGIN:SUCCESS", res.json);
+        } else {
+          setError(res.message);
+          setLoading(false);
+        }
       });
-      let json = {};
-      try {
-        json = await f.json();
-      } catch (error) {}
-      if (f.status === 200) {
-        setLoading(false);
-        await DataStore.set("token", json.token);
-        EventHandler.emit("LOGIN:SUCCESS", json);
-      } else {
-        setError(f.statusText || json.message || "An error occurred");
-        setLoading(false);
-      }
+
+      // f = await fetch(endpoint + "/login", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify({
+      //     email: username,
+      //     password,
+      //   }),
+      // });
+      // let json = {};
+      // try {
+      //   json = await f.json();
+      // } catch (error) {}
+      // if (f.status === 200) {
+      //   setLoading(false);
+      //   await DataStore.set("token", json.token);
+      //   EventHandler.emit("LOGIN:SUCCESS", json);
+      // } else {
+      //   setError(f.statusText || json.message || "An error occurred");
+      //   setLoading(false);
+      // }
     } catch (error) {
       console.error(error);
       setError(JSON.stringify(error));
@@ -72,7 +90,7 @@ export const Login = () => {
                 inputMode="text"
                 onChangeText={setPassword}
               />
-              <ActionButton onPress={onPress} role="blue">
+              <ActionButton onPress={onPress} scheme="blue">
                 {loading ? (
                   <ActivityIndicator color={theme.color["blue:primary"]} />
                 ) : (

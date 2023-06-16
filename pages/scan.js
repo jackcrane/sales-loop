@@ -152,7 +152,7 @@ export const ScanAddToCart = (barcodeData) => {
               cart.
             </Text>
             <Spacer height={30} />
-            <ActionButton onPress={addToCart} role="blue">
+            <ActionButton onPress={addToCart} scheme="blue">
               {addWorking ? (
                 <ActivityIndicator color={theme.color["blue:primary"]} />
               ) : (
@@ -191,7 +191,7 @@ export const Scan = ({ navigation, route }) => {
                 title={barcodeData.name}
                 icon={<TablerScan />}
                 label="Add to cart"
-                role="yellow"
+                scheme="yellow"
                 onPress={() => {
                   EventHandler.emit("MODAL:OPEN", {
                     title: "Add product to cart",

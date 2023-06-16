@@ -83,6 +83,7 @@ export const Header = (props) => {
             <BigLogo
               source={{ uri: props.logo || null }}
               width={Dimensions.get("window").width * 0.4}
+              maxHeight={50}
             />
           </Between>
         )}

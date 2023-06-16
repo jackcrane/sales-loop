@@ -41,9 +41,10 @@ const EverythingElseContainer = styled.View`
 export const Cart = (props) => {
   const _cart = props.route.params.cart;
   const [cart, setCart] = useState(_cart);
-  const [updateKey, setUpdateKey] = useState(0);
+  const [updateKey, setUpdateKey] = useState(true);
 
   useEffect(() => {
+    console.log("refreshing cart");
     request(`/cart/${_cart.id}?includeProduct=true`, {
       method: "GET",
     }).then((res) => {
@@ -56,7 +57,14 @@ export const Cart = (props) => {
 
   useEffect(() => {
     EventHandler.on("CART:UPDATE", () => {
-      setUpdateKey(updateKey + 1);
+      request(`/cart/${_cart.id}?includeProduct=true`, {
+        method: "GET",
+      }).then((res) => {
+        if (res.ok) {
+          setCart(res.json.cart);
+        } else {
+        }
+      });
     });
   }, []);
 
@@ -126,7 +134,7 @@ export const Cart = (props) => {
                     deleteCart();
                   }}
                   label="Delete cart"
-                  role="red"
+                  scheme="red"
                   half={true}
                 >
                   Delete cart
@@ -135,7 +143,7 @@ export const Cart = (props) => {
                   half={true}
                   onPress={() => {}}
                   label="Submit cart"
-                  role="blue"
+                  scheme="blue"
                 >
                   Submit cart
                 </ActionButton>
@@ -146,7 +154,7 @@ export const Cart = (props) => {
                   activateCart();
                 }}
                 label="Activate cart"
-                role="green"
+                scheme="green"
                 half={false}
               >
                 Activate cart
@@ -163,7 +171,7 @@ export const Cart = (props) => {
                 label={item.qty}
                 onPress={() => {
                   EventHandler.emit("MODAL:OPEN", {
-                    title: "Product cart configuration",
+                    title: "Edit cart",
                     icon: <TablerTag />,
                     content: <ProductCartConfigurationModal item={item} />,
                   });
@@ -183,7 +191,11 @@ export const Cart = (props) => {
 };
 
 const ProductCartConfigurationModal = (props) => {
+  const [working, setWorking] = useState(false);
+
   const removeFromCart = async () => {
+    if (working) return;
+    setWorking(true);
     const f = await request(`/cart/remove-item`, {
       method: "POST",
       body: JSON.stringify({
@@ -200,12 +212,15 @@ const ProductCartConfigurationModal = (props) => {
       EventHandler.emit("MODAL:CLOSE");
       EventHandler.emit("CART:UPDATE");
     }
+    setWorking(false);
   };
 
   const [qty, setQty] = useState(props.item.qty);
   const updateQty = async () => {
+    if (working) return;
+    setWorking(true);
     const f = await request(`/cart/update-item`, {
-      method: "PUT",
+      method: "POST",
       body: JSON.stringify({
         cartId: props.item.cartId,
         productId: props.item.productId,
@@ -221,6 +236,7 @@ const ProductCartConfigurationModal = (props) => {
       EventHandler.emit("MODAL:CLOSE");
       EventHandler.emit("CART:UPDATE");
     }
+    setWorking(false);
   };
 
   return (
@@ -229,7 +245,7 @@ const ProductCartConfigurationModal = (props) => {
         <>
           <Row align="flex-start" between>
             <NumberInputContainer>
-              <NumberInput value={props.item.qty} />
+              <NumberInput value={props.item.qty} onChange={setQty} />
             </NumberInputContainer>
             <EverythingElseContainer>
               <Whisper>Product</Whisper>
@@ -242,18 +258,26 @@ const ProductCartConfigurationModal = (props) => {
                   removeFromCart();
                 }}
                 label="Remove from cart"
-                role="red"
+                scheme="red"
               >
-                Remove from cart
+                {working ? (
+                  <ActivityIndicator color={theme.color["red:primary"]} />
+                ) : (
+                  "Remove from cart"
+                )}
               </ActionButton>
               <ActionButton
                 onPress={() => {
                   updateQty();
                 }}
                 label="Update qty"
-                role="blue"
+                scheme="blue"
               >
-                Update qty
+                {working ? (
+                  <ActivityIndicator color={theme.color["blue:primary"]} />
+                ) : (
+                  "Update qty"
+                )}
               </ActionButton>
             </EverythingElseContainer>
           </Row>

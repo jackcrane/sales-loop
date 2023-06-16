@@ -32,7 +32,7 @@ import { Home } from "./pages/home";
 import { Scan } from "./pages/scan";
 import { Settings } from "./pages/settings";
 import { SettingsAccount } from "./pages/settings/account";
-import { AddModal } from "./kit/add-modal";
+import { AddModal, SubModal } from "./kit/add-modal";
 import { WhatIs } from "./pages/settings/what-is";
 import { About } from "./pages/settings/about";
 import { Carts } from "./pages/carts";
@@ -115,13 +115,16 @@ export default function App() {
   useEffect(() => {
     DataStore.get("token").then(async (token) => {
       if (token) {
+        console.log("Getting Profile");
         const prof = await getProfile(token);
         if (prof.error) {
+          console.log(prof.error);
           setUser(null);
           setLoggedIn(false);
           setToken(null);
           return;
         } else {
+          console.log("success");
           setUser(prof);
           setToken(token);
           setLoggedIn(true);
@@ -315,6 +318,7 @@ export default function App() {
             </Stack.Navigator>
           </NavigationContainer>
           <AddModal />
+          <SubModal />
         </ThemeProvider>
       </SafeAreaProvider>
       <Toast
@@ -323,8 +327,8 @@ export default function App() {
             <ErrorToast
               {...props}
               style={{
-                backgroundColor: "red",
-                opacity: 0.6,
+                backgroundColor: "#FF595E",
+                opacity: 0.95,
                 ...TOAST_STYLES,
               }}
               text1Style={{
@@ -341,8 +345,8 @@ export default function App() {
             <SuccessToast
               {...props}
               style={{
-                backgroundColor: "green",
-                opacity: 0.6,
+                backgroundColor: "#8AC926",
+                opacity: 0.95,
                 ...TOAST_STYLES,
               }}
               text1Style={{
@@ -359,8 +363,8 @@ export default function App() {
             <InfoToast
               {...props}
               style={{
-                backgroundColor: "#1D71F2",
-                opacity: 0.6,
+                backgroundColor: "#1982C4",
+                opacity: 0.95,
                 ...TOAST_STYLES,
               }}
               text1Style={{

@@ -51,6 +51,7 @@ const NewCart = () => {
       console.log(cartId);
       setCartWorking(false);
       EventHandler.emit("CART:SET", cartId);
+      EventHandler.emit("CARTS:UPDATE");
       EventHandler.emit("SUBMODAL:CLOSE");
     }
   };
@@ -75,7 +76,7 @@ const NewCart = () => {
           />
           {nameText.length > 0 && (
             <ActionButton
-              role="blue"
+              scheme="blue"
               onPress={() => {
                 createCart();
               }}
@@ -138,7 +139,7 @@ export const CartPicker = ({ barcodeData, qty, initialCarts }) => {
           <Picker.Item key={cart.id} label={cart.name} value={cart.id} />
         ))}
       </Picker>
-      <ActionButton role="blue" onPress={onSelect}>
+      <ActionButton scheme="blue" onPress={onSelect}>
         Select
       </ActionButton>
     </>

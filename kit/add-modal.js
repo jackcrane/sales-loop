@@ -63,7 +63,7 @@ export const AddModal = () => {
             <InlineButton
               icon={<TablerClose size={15} />}
               type="close"
-              role="red"
+              scheme="red"
               onPress={() => {
                 EventHandler.emit("MODAL:CLOSE");
               }}
@@ -121,7 +121,7 @@ export const SubModal = () => {
               <InlineButton
                 icon={<TablerClose size={15} />}
                 type="close"
-                role="red"
+                scheme="red"
                 onPress={() => {
                   EventHandler.emit("SUBMODAL:CLOSE");
                 }}
@@ -141,7 +141,7 @@ export const SubModal = () => {
                 <InlineButton
                   icon={<TablerClose size={15} />}
                   type="close"
-                  role="red"
+                  scheme="red"
                   onPress={() => {
                     dismiss();
                   }}
